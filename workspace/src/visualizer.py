@@ -5,7 +5,7 @@ import numpy as np
 from environment import BoxObstacle, CircleObstacle, PolygonObstacle, EllipseObstacle
 
 
-def draw_plan(environment, tree, path, filepath, title):
+def draw_plan(environment, tree, path, filepath, title, stats=None):
     filepath = Path(filepath)
     fig, ax = plt.subplots(figsize=(6, 5))
     ax.set_xlim(environment.bounds[0])
@@ -36,7 +36,16 @@ def draw_plan(environment, tree, path, filepath, title):
     if path is not None:
         ax.plot(path[:, 0], path[:, 1], color="#ff9800", linewidth=2.0)
     ax.set_aspect("equal")
-    ax.set_title(title)
+    
+    info_text = title
+    if stats:
+        goal_found = "Yes" if stats.get("goal_found", False) else "No"
+        node_count = stats.get("node_count", len(tree.nodes))
+        time_val = stats.get("time", None)
+        info_text += f"\nGoal: {goal_found}, Nodes: {node_count}"
+        if time_val is not None:
+            info_text += f", Time: {time_val:.3f}s"
+    ax.set_title(info_text, fontsize=10)
     ax.set_xticks([])
     ax.set_yticks([])
     filepath.parent.mkdir(parents=True, exist_ok=True)

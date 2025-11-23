@@ -10,7 +10,7 @@ if str(SRC) not in sys.path:
     sys.path.append(str(SRC))
 
 from environment import PlaneEnvironment, BoxObstacle, CircleObstacle, PolygonObstacle, EllipseObstacle
-from planners import RandomTreePlanner, HeuristicTreePlanner, RRTPlanner
+from planners import RRTPlanner, RRTStarPlanner, RRTStarImprovedPlanner
 from visualizer import draw_plan
 
 
@@ -40,12 +40,12 @@ def build_environment():
     return PlaneEnvironment(bounds, start, goal, obstacles, step=0.35)
 
 
-def run(iterations=800):
+def run(iterations=2000):
     env = build_environment()
     planners = [
-        ("part1_random", RandomTreePlanner(env, step_size=0.5, goal_radius=0.6, seed=4)),
-        ("part1_heuristic", HeuristicTreePlanner(env, step_size=0.45, goal_radius=0.6, seed=4)),
-        ("part1_rrt", RRTPlanner(env, step_size=0.5, goal_radius=0.6, seed=4)),
+        ("part2_rrt", RRTPlanner(env, step_size=0.5, goal_radius=0.6, seed=4)),
+        ("part2_rrt_star", RRTStarPlanner(env, step_size=0.5, goal_radius=0.6, gamma=30.0, seed=4)),
+        ("part2_rrt_star_improved", RRTStarImprovedPlanner(env, step_size=0.5, goal_radius=0.6, gamma=30.0, seed=4)),
     ]
     outputs = {}
     for name, planner in planners:
@@ -64,7 +64,7 @@ def run(iterations=800):
 if __name__ == "__main__":
     logs_dir = ROOT / "logs"
     logs_dir.mkdir(exist_ok=True)
-    log_file = logs_dir / f"part1_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+    log_file = logs_dir / f"part2_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
     
     summary = run()
     
